@@ -1,0 +1,16 @@
+[
+{
+  "modid": "tidychunk",
+  "name": "Tidy Chunk",
+  "description": "Removes EntityItems after chunk generation.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["OreCruncher"],
+  "credits": "Hmmmm....",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
