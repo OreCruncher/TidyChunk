@@ -33,36 +33,35 @@ import net.minecraftforge.common.config.Config.Type;
 @Config(modid = TidyChunk.MOD_ID, type = Type.INSTANCE, name = TidyChunk.MOD_ID)
 @LangKey("config.tidychunk.title")
 public class Configuration {
-	
+
 	@LangKey("config.tidychunk.logging")
 	public static Logging logging = new Logging();
-	
+
 	@LangKey("config.tidychunk.options")
 	public static Options options = new Options();
-	
+
 	@LangKey("config.tidychunk.logging")
 	public static class Logging {
 		@LangKey("config.tidychunk.logging.enableLogging")
-		@Comment({
-			"Enables debug logging output for diagnostics"
-		})
+		@Comment({ "Enables debug logging output for diagnostics" })
 		public boolean enableLogging = false;
-		
+
 		@LangKey("config.tidychunk.logging.enableVersionCheck")
-		@Comment({
-			"Enables display of chat messages related to newer versions",
-			"of the mod being available."
-		})
+		@Comment({ "Enables display of chat messages related to newer versions", "of the mod being available." })
 		public boolean enableVersionCheck = true;
 	}
-	
+
 	@LangKey("config.tidychunk.options")
 	public static class Options {
 		@LangKey("config.tidychunk.options.tickspan")
-		@Comment({
-			"Number of ticks post chunk generation to check for EntityItems"
-		})
-		@RangeInt(min = 1, max = 100)
-		public int tickSpan = 3;
+		@Comment({ "Number of ticks post chunk generation to check for EntityItems",
+				"0 means use internal default (10 ticks)" })
+		@RangeInt(min = 0, max = 100)
+		public int tickSpan = 0;
+
+		@LangKey("config.tidychunk.options.fakeplayers")
+		@Comment({ "List of fake players from which to remove block drops",
+				"May not work in all circumstances due to Forge swiss army knife interfaces" })
+		public String[] fakePlayers = new String[] {};
 	}
 }
