@@ -21,7 +21,7 @@ config.tidychunk.logging.enableVersionCheck=Enable Version Check
 config.tidychunk.logging.enableVersionCheck.tooltip=Enable/Disable message related to a newer version of the mod being available
 
 config.tidychunk.options=Options
-config.tidychunk.options.tooltip=Options to control TinyChunk behavior
+config.tidychunk.options.tooltip=Options to control TidyChunk behavior
 config.tidychunk.options.tickspan=Tick Span
 config.tidychunk.options.tickspan.tooltip=Number of ticks post chunk generation to check for EntityItems
 config.tidychunk.options.fakeplayers=Fake Players
