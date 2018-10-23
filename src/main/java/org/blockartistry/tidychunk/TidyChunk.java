@@ -56,7 +56,16 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
-@Mod(modid = TidyChunk.MOD_ID, useMetadata = true, dependencies = TidyChunk.DEPENDENCIES, version = TidyChunk.VERSION, acceptedMinecraftVersions = TidyChunk.MINECRAFT_VERSIONS, updateJSON = TidyChunk.UPDATE_URL, certificateFingerprint = TidyChunk.FINGERPRINT)
+@Mod(
+		modid = TidyChunk.MOD_ID,
+		useMetadata = true,
+		dependencies = TidyChunk.DEPENDENCIES,
+		version = TidyChunk.VERSION,
+		acceptedMinecraftVersions = TidyChunk.MINECRAFT_VERSIONS,
+		updateJSON = TidyChunk.UPDATE_URL,
+		certificateFingerprint = TidyChunk.FINGERPRINT,
+		acceptableRemoteVersions = "*"
+)
 public class TidyChunk {
 	public static final String MOD_ID = "tidychunk";
 	public static final String MOD_NAME = "TidyChunk";

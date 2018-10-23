@@ -24,78 +24,113 @@
 
 package org.blockartistry.tidychunk.events;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import org.blockartistry.tidychunk.Configuration;
 import org.blockartistry.tidychunk.TidyChunk;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 
+/*
+ * This logic tracks chunk generation and purges entity items that
+ * fall within the chunk for a config defined tick interval.
+ */
+
 @EventBusSubscriber(value = Side.CLIENT, modid = TidyChunk.MOD_ID)
 public class ThePurge {
 
-	public static Set<ChunkPos> chunks = new HashSet<>();
-	private static World check;
+	private static class WorldContext {
 
-	public static long chunksChecked = 0;
-	public static long entitiesWiped = 0;
+		public final Object2LongOpenHashMap<ChunkPos> chunks = new Object2LongOpenHashMap<>();
 
-	@SubscribeEvent
-	public static void onWorldTick(final TickEvent.WorldTickEvent evt) {
-		if (evt.side != Side.SERVER)
+		public void searchAndDestroy(final World world) {
+			if (this.chunks.size() > 0) {
+				final List<EntityItem> theList = world.getEntities(EntityItem.class, t -> {
+					return this.chunks.keySet().contains(new ChunkPos(t.getPosition()));
+				});
+
+				for (final EntityItem item : theList) {
+					item.setDead();
+				}
+
+				if (theList.size() > 0) {
+					TidyChunk.log().debug("Chunks checked: %d, entities wiped: %d", this.chunks.size(), theList.size());
+				}
+			}
+		}
+
+		public void removeOldContext(final World world) {
+			// Remove any contexts that are older than 3 ticks
+			this.chunks.entrySet().removeIf(ctx -> {
+				return (world.getWorldTime() - ctx.getValue()) > Configuration.options.tickSpan;
+			});
+		}
+
+	}
+
+	private static Int2ObjectArrayMap<WorldContext> worldData = new Int2ObjectArrayMap<>();
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void onWorldLoad(final WorldEvent.Load evt) {
+		final World w = evt.getWorld();
+		if (w.isRemote)
 			return;
 
-		if (evt.phase == Phase.START) {
-			if (check != null)
-				searchAndDestroy(check);
-			chunks = new HashSet<>();
-			check = evt.world;
-		} else {
-			worldCheck(evt.world);
-			searchAndDestroy(evt.world);
-			check = null;
-		}
+		worldData.put(w.provider.getDimension(), new WorldContext());
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onWorldUnload(final WorldEvent.Unload evt) {
+		final World w = evt.getWorld();
+		if (w.isRemote)
+			return;
+		// One final purge pass
+		getWorldContext(w).searchAndDestroy(w);
+		worldData.remove(w.provider.getDimension());
+
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onWorldTick(final TickEvent.WorldTickEvent evt) {
+		if (evt.side != Side.SERVER || evt.phase != Phase.END)
+			return;
+
+		final WorldContext ctx = worldData.get(evt.world.provider.getDimension());
+		if (ctx == null) {
+			final String msg = String.format("WorldContext was not found for dimension %d!",
+					evt.world.provider.getDimension());
+			throw new IllegalStateException(msg);
+		}
+
+		ctx.searchAndDestroy(evt.world);
+		ctx.removeOldContext(evt.world);
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
 	public static void onChunkPopulate(final PopulateChunkEvent.Pre evt) {
-		// Possible that it is null because of initial world load
-		if (check == null) {
-			check = evt.getWorld();
-		} else {
-			worldCheck(evt.getWorld());
+		final WorldContext ctx = getWorldContext(evt.getWorld());
+		ctx.chunks.put(new ChunkPos(evt.getChunkX(), evt.getChunkZ()), evt.getWorld().getWorldTime());
+	}
+
+	private static WorldContext getWorldContext(final World w) {
+		final WorldContext ctx = worldData.get(w.provider.getDimension());
+		if (ctx == null) {
+			final String msg = String.format("WorldContext was not found for dimension %d!", w.provider.getDimension());
+			throw new IllegalStateException(msg);
 		}
-		chunks.add(new ChunkPos(evt.getChunkX(), evt.getChunkZ()));
+		return ctx;
 	}
 
-	private static void searchAndDestroy(final World world) {
-		if (chunks.size() > 0) {
-			chunksChecked += chunks.size();
-			final List<EntityItem> theList = world.getEntities(EntityItem.class, t -> {
-				return chunks.contains(new ChunkPos(t.getPosition()));
-			});
-
-			for (final EntityItem item : theList) {
-				item.setDead();
-			}
-			entitiesWiped += theList.size();
-			
-			TidyChunk.log().debug("Chunks checked: %d, entities wiped: %d", chunks.size(), theList.size());
-		}
-
-	}
-
-	private static void worldCheck(final World w) {
-		if (check != w)
-			throw new IllegalStateException("World doesnt match!");
-	}
 }

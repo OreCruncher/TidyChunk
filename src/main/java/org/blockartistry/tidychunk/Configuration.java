@@ -27,6 +27,7 @@ package org.blockartistry.tidychunk;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.LangKey;
+import net.minecraftforge.common.config.Config.RangeInt;
 import net.minecraftforge.common.config.Config.Type;
 
 @Config(modid = TidyChunk.MOD_ID, type = Type.INSTANCE, name = TidyChunk.MOD_ID)
@@ -35,6 +36,9 @@ public class Configuration {
 	
 	@LangKey("config.tidychunk.logging")
 	public static Logging logging = new Logging();
+	
+	@LangKey("config.tidychunk.options")
+	public static Options options = new Options();
 	
 	@LangKey("config.tidychunk.logging")
 	public static class Logging {
@@ -50,5 +54,15 @@ public class Configuration {
 			"of the mod being available."
 		})
 		public boolean enableVersionCheck = true;
+	}
+	
+	@LangKey("config.tidychunk.options")
+	public static class Options {
+		@LangKey("config.tidychunk.options.tickspan")
+		@Comment({
+			"Number of ticks post chunk generation to check for EntityItems"
+		})
+		@RangeInt(min = 1, max = 100)
+		public int tickSpan = 3;
 	}
 }
