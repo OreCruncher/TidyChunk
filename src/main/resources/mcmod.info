@@ -11,8 +11,8 @@
 		"authorList": [
 			"OreCruncher"
 		],
-		"credits": "Hmmmm....",
-		"logoFile": "",
+		"credits": "WorldGen that leaves debris behind...",
+		"logoFile": "assets/tidychunk/textures/logo.png",
 		"screenshots": [
 		],
 		"dependencies": [
