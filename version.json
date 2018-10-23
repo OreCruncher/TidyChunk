@@ -1,0 +1,10 @@
+{
+	"homepage": "https://minecraft.curseforge.com/projects/tidychunk/files",
+	"1.12.2": {
+		"0.1.0.0": "See https://github.com/OreCruncher/TidyChunk/blob/master/CHANGELOG.md"
+	},
+	"promos": {
+		"1.12.2-latest": "0.1.0.0",
+		"1.12.2-recommended": "0.1.0.0"
+	}
+}

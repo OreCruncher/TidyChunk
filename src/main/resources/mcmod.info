@@ -1,16 +1,21 @@
 [
-{
-  "modid": "tidychunk",
-  "name": "Tidy Chunk",
-  "description": "Removes EntityItems after chunk generation.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["OreCruncher"],
-  "credits": "Hmmmm....",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+	{
+		"modid": "tidychunk",
+		"name": "Tidy Chunk",
+		"description": "Removes EntityItems after chunk generation",
+		"version": "$version",
+		"mcversion": "$mcversion",
+		"url": "https://github.com/OreCruncher/TidyChunk/wiki",
+		"updateUrl": "https://raw.githubusercontent.com/OreCruncher/TidyChunk/master/version.json",
+		"updateJSON": "https://raw.githubusercontent.com/OreCruncher/TidyChunk/master/version.json",
+		"authorList": [
+			"OreCruncher"
+		],
+		"credits": "Hmmmm....",
+		"logoFile": "",
+		"screenshots": [
+		],
+		"dependencies": [
+		]
+	}
 ]
