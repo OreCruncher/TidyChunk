@@ -1,6 +1,8 @@
 ### TidyChunk
 Forge mod that cleans up a chunk in the aftermath of world generation.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/585d283924c74edd9fce273ccfcff611)](https://www.codacy.com/app/BlockArtistry/TidyChunk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OreCruncher/TidyChunk&amp;utm_campaign=Badge_Grade)
+
 ### License
 The MIT License (MIT)
 
