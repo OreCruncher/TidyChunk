@@ -133,26 +133,32 @@ public class ModLog {
 
 		@Override
 		public void info(@Nonnull final String msg, @Nullable final Object... parms) {
+			// Intentionally blank
 		}
 
 		@Override
 		public void warn(@Nonnull final String msg, @Nullable final Object... parms) {
+			// Intentionally blank
 		}
 
 		@Override
 		public void debug(@Nonnull final String msg, @Nullable final Object... parms) {
+			// Intentionally blank
 		}
 
 		@Override
 		public void debug(final int mask, @Nonnull final String msg, @Nullable final Object... parms) {
+			// Intentionally blank
 		}
 
 		@Override
 		public void error(@Nonnull final String msg, @Nonnull final Throwable e) {
+			// Intentionally blank
 		}
 
 		@Override
 		public void catching(@Nonnull final Throwable t) {
+			// Intentionally blank
 		}
 	};
 }

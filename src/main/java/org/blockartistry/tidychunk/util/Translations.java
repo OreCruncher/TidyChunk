@@ -45,10 +45,6 @@ public class Translations {
 
 	private Map<String, String> lookup = new HashMap<>();
 
-	public Translations() {
-
-	}
-
 	protected void merge(@Nonnull final InputStream stream) throws IOException {
 		net.minecraftforge.fml.common.FMLCommonHandler.instance().loadLanguage(this.lookup, stream);
 	}

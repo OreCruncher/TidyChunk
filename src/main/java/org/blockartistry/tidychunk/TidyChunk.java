@@ -29,7 +29,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.blockartistry.tidychunk.proxy.Proxy;
+import org.blockartistry.tidychunk.proxy.IProxy;
 import org.blockartistry.tidychunk.util.ForgeUtils;
 import org.blockartistry.tidychunk.util.Localization;
 import org.blockartistry.tidychunk.util.ModLog;
@@ -49,10 +49,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
@@ -78,17 +74,17 @@ public class TidyChunk {
 	@Instance(MOD_ID)
 	protected static TidyChunk instance;
 
+	@SidedProxy(clientSide = "org.blockartistry.tidychunk.proxy.CilentProxy", serverSide = "org.blockartistry.tidychunk.proxy.ServerProxy")
+	protected static IProxy proxy;
+	protected static ModLog logger = ModLog.NULL_LOGGER;
+
 	@Nonnull
 	public static TidyChunk instance() {
 		return instance;
 	}
 
-	@SidedProxy(clientSide = "org.blockartistry.tidychunk.proxy.ProxyClient", serverSide = "org.blockartistry.tidychunk.proxy.Proxy")
-	protected static Proxy proxy;
-	protected static ModLog logger = ModLog.NULL_LOGGER;
-
 	@Nonnull
-	public static Proxy proxy() {
+	public static IProxy proxy() {
 		return proxy;
 	}
 
@@ -97,33 +93,33 @@ public class TidyChunk {
 		return logger;
 	}
 
-	public TidyChunk() {
-
-	}
-
+	//==================================
+	//
+	// Standard proxy event handling.
+	//
+	//==================================
+	
 	@EventHandler
 	public void preInit(@Nonnull final FMLPreInitializationEvent event) {
 
 		logger = ModLog.setLogger(TidyChunk.MOD_ID, event.getModLog());
-
-		MinecraftForge.EVENT_BUS.register(this);
-
 		logger.setDebug(Configuration.logging.enableLogging);
-
-		proxy.preInit(event);
+		MinecraftForge.EVENT_BUS.register(this);
+		
+		proxy().preInit(event);
 	}
 
 	@EventHandler
 	public void init(@Nonnull final FMLInitializationEvent event) {
-		proxy.init(event);
+		proxy().init(event);
 	}
 
 	@EventHandler
 	public void postInit(@Nonnull final FMLPostInitializationEvent event) {
-		proxy.postInit(event);
+		proxy().postInit(event);
 
 		// Patch up metadata
-		if (!proxy.isRunningAsServer()) {
+		if (!proxy().isDedicatedServer()) {
 			final ModMetadata data = ForgeUtils.getModMetadata(TidyChunk.MOD_ID);
 			if (data != null) {
 				data.name = Localization.format("tidychunk.metadata.Name");
@@ -134,11 +130,17 @@ public class TidyChunk {
 			}
 		}
 	}
-
+	
 	@EventHandler
-	public void loadCompleted(@Nonnull final FMLLoadCompleteEvent event) {
-		proxy.loadCompleted(event);
+	public void loadComplete(@Nonnull final FMLLoadCompleteEvent event) {
+		proxy().loadCompleted(event);
 	}
+
+	//==================================
+	//
+	// Extra event handling
+	//
+	//==================================
 
 	@EventHandler
 	public void onFingerprintViolation(@Nonnull final FMLFingerprintViolationEvent event) {
@@ -157,31 +159,6 @@ public class TidyChunk {
 	public void playerLogin(final PlayerLoggedInEvent event) {
 		if (Configuration.logging.enableVersionCheck)
 			new VersionChecker(TidyChunk.MOD_ID, "tidychunk.msg.NewVersion").playerLogin(event);
-	}
-
-	////////////////////////
-	//
-	// Server state events
-	//
-	////////////////////////
-	@EventHandler
-	public void serverAboutToStart(@Nonnull final FMLServerAboutToStartEvent event) {
-		proxy.serverAboutToStart(event);
-	}
-
-	@EventHandler
-	public void serverStarting(@Nonnull final FMLServerStartingEvent event) {
-		proxy.serverStarting(event);
-	}
-
-	@EventHandler
-	public void serverStopping(@Nonnull final FMLServerStoppingEvent event) {
-		proxy.serverStopping(event);
-	}
-
-	@EventHandler
-	public void serverStopped(@Nonnull final FMLServerStoppedEvent event) {
-		proxy.serverStopped(event);
 	}
 
 }

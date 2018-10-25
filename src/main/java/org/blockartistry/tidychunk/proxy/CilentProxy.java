@@ -26,45 +26,23 @@ package org.blockartistry.tidychunk.proxy;
 
 import javax.annotation.Nonnull;
 
+import org.blockartistry.tidychunk.TidyChunk;
 import org.blockartistry.tidychunk.util.Localization;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ProxyClient extends Proxy {
+public class CilentProxy implements IProxy {
 
 	@Override
-	protected void registerLanguage() {
-		Localization.initialize(Side.CLIENT);
-	}
-
-	@Override
-	public boolean isRunningAsServer() {
+	public boolean isDedicatedServer() {
 		return false;
 	}
 
 	@Override
-	public Side effectiveSide() {
-		return FMLCommonHandler.instance().getEffectiveSide();
-	}
-
-	@Override
 	public void preInit(@Nonnull final FMLPreInitializationEvent event) {
-		super.preInit(event);
+		Localization.initialize(Side.CLIENT, TidyChunk.MOD_ID);
 	}
-
-	@Override
-	public void init(@Nonnull final FMLInitializationEvent event) {
-		super.init(event);
-	}
-
-	@Override
-	public void postInit(@Nonnull final FMLPostInitializationEvent event) {
-	}
-
 }
