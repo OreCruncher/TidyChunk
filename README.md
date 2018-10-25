@@ -3,9 +3,9 @@ Forge mod that cleans up a chunk in the aftermath of world generation.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/585d283924c74edd9fce273ccfcff611)](https://www.codacy.com/app/BlockArtistry/TidyChunk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=OreCruncher/TidyChunk&amp;utm_campaign=Badge_Grade)
 
-<a href="https://minecraft.curseforge.com/projects/tidychunk"><img src="http://cf.way2muchnoise.eu/versions/dynamic-surroundings.svg" alt="CurseForge Project"/></a>
+<a href="https://minecraft.curseforge.com/projects/tidychunk"><img src="http://cf.way2muchnoise.eu/versions/tidychunk.svg" alt="CurseForge Project"/></a>
 </br></br>
-<a href="https://minecraft.curseforge.com/projects/tidychunk"><img src="http://cf.way2muchnoise.eu/full_dynamic-surroundings_downloads.svg" alt="CurseForge Project"/></a>
+<a href="https://minecraft.curseforge.com/projects/tidychunk"><img src="http://cf.way2muchnoise.eu/full_tidychunk_downloads.svg" alt="CurseForge Project"/></a>
 
 ### License
 The MIT License (MIT)
