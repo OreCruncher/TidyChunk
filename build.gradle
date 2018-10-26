@@ -101,7 +101,7 @@ processResources
 jar {
     
     manifest {
-        	attributes('FMLCorePlugin': 'org.blockartistry.DynSurround.asm.TransformLoader', 'FMLCorePluginContainsFMLMod': 'true', 'FMLAT': 'dsurround_at.cfg')
+
     }
 }
 
@@ -118,12 +118,12 @@ task deobfJar(type: Jar) {
     classifier = 'dev'
     
     manifest {
-        	attributes('FMLCorePlugin': 'org.blockartistry.DynSurround.asm.TransformLoader', 'FMLCorePluginContainsFMLMod': 'true', 'FMLAT': 'dsurround_at.cfg')
     }
 }
 
 // https://gist.github.com/matthewprenger/9b2da059b89433a01c1c
 task signJar(type: SignJar, dependsOn: reobfJar) {
+
     onlyIf { // Skip the task if our secret data isn't available
         project.hasProperty('keyStore')
     }
