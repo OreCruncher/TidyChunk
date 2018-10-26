@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @EventBusSubscriber(modid = TidyChunk.MOD_ID)
 @Config(modid = TidyChunk.MOD_ID, type = Type.INSTANCE, name = TidyChunk.MOD_ID)
-@LangKey("config.tidychunk.title")
+//@LangKey("config.tidychunk.title")
 public class Configuration {
 
 	@LangKey("config.tidychunk.logging")
@@ -45,7 +45,6 @@ public class Configuration {
 	@LangKey("config.tidychunk.options")
 	public static Options options = new Options();
 
-	@LangKey("config.tidychunk.logging")
 	public static class Logging {
 		@LangKey("config.tidychunk.logging.enableLogging")
 		@Comment({ "Enables debug logging output for diagnostics" })
@@ -56,7 +55,6 @@ public class Configuration {
 		public boolean enableVersionCheck = true;
 	}
 
-	@LangKey("config.tidychunk.options")
 	public static class Options {
 		@LangKey("config.tidychunk.options.tickspan")
 		@Comment({ "Number of ticks post chunk generation to check for EntityItems",
