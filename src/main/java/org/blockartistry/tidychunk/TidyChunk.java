@@ -36,9 +36,6 @@ import org.blockartistry.tidychunk.util.ModLog;
 import org.blockartistry.tidychunk.util.VersionChecker;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Config.Type;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -145,14 +142,6 @@ public class TidyChunk {
 	@EventHandler
 	public void onFingerprintViolation(@Nonnull final FMLFingerprintViolationEvent event) {
 		log().warn("Invalid fingerprint detected!");
-	}
-
-	@SubscribeEvent
-	public void onConfigChangedEvent(final OnConfigChangedEvent event) {
-		if (event.getModID().equals(MOD_ID)) {
-			ConfigManager.sync(MOD_ID, Type.INSTANCE);
-			log().setDebug(Configuration.logging.enableLogging);
-		}
 	}
 
 	@SubscribeEvent

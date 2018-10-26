@@ -29,7 +29,12 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.LangKey;
 import net.minecraftforge.common.config.Config.RangeInt;
 import net.minecraftforge.common.config.Config.Type;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber(modid = TidyChunk.MOD_ID)
 @Config(modid = TidyChunk.MOD_ID, type = Type.INSTANCE, name = TidyChunk.MOD_ID)
 @LangKey("config.tidychunk.title")
 public class Configuration {
@@ -63,5 +68,13 @@ public class Configuration {
 		@Comment({ "List of fake players from which to remove block drops",
 				"May not work in all circumstances due to Forge swiss army knife interfaces" })
 		public String[] fakePlayers = new String[] {};
+	}
+
+	@SubscribeEvent
+	public static void onConfigChangedEvent(final OnConfigChangedEvent event) {
+		if (event.getModID().equals(TidyChunk.MOD_ID)) {
+			ConfigManager.sync(TidyChunk.MOD_ID, Type.INSTANCE);
+			TidyChunk.log().setDebug(Configuration.logging.enableLogging);
+		}
 	}
 }
