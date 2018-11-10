@@ -24,6 +24,8 @@
 
 package org.blockartistry.tidychunk.events;
 
+import javax.annotation.Nonnull;
+
 import org.blockartistry.tidychunk.Configuration;
 import org.blockartistry.tidychunk.TidyChunk;
 
@@ -40,13 +42,17 @@ class WorldContext {
 	private final Object2LongOpenHashMap<ChunkPos> chunks = new Object2LongOpenHashMap<>();
 	private int removeCount = 0;
 
+	public static boolean isTargetEntity(@Nonnull final Entity e) {
+		return e.getClass() == EntityItem.class;
+	}
+
 	public void add(final ChunkPos pos, final World world) {
 		this.chunks.put(pos, world.getTotalWorldTime());
 	}
 
-	public void searchAndDestroy(final World world) {
+	public void searchAndDestroy(@Nonnull final World world) {
 		if (this.chunks.size() > 0) {
-			world.getEntities(EntityItem.class, t -> isContained(t)).forEach(e -> removeEntity(e));
+			world.getEntities(EntityItem.class, t -> isTargetEntity(t) && isContained(t)).forEach(e -> removeEntity(e));
 			if (this.removeCount > 0) {
 				TidyChunk.log().debug("Entities wiped: %d", this.removeCount);
 				this.removeCount = 0;
@@ -54,20 +60,20 @@ class WorldContext {
 		}
 	}
 
-	public void removeOldContext(final World world) {
+	public void removeOldContext(@Nonnull final World world) {
 		final int span = Configuration.options.tickSpan == 0 ? DEFAULT_TICK_SPAN : Configuration.options.tickSpan;
 		// Remove any contexts that are older than the configured number of ticks
 		this.chunks.entrySet().removeIf(ctx -> {
 			return (world.getTotalWorldTime() - ctx.getValue()) > span;
 		});
 	}
-	
-	public void removeEntity(final Entity entity) {
+
+	public void removeEntity(@Nonnull final Entity entity) {
 		entity.setDead();
 		this.removeCount++;
 	}
 
-	public boolean isContained(final Entity entity) {
+	public boolean isContained(@Nonnull final Entity entity) {
 		return entity.isEntityAlive() && this.chunks.containsKey(new ChunkPos(entity.getPosition()));
 	}
 }

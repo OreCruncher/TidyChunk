@@ -24,11 +24,12 @@
 
 package org.blockartistry.tidychunk.events;
 
+import javax.annotation.Nonnull;
+
 import org.blockartistry.tidychunk.TidyChunk;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -57,7 +58,7 @@ public class ThePurge {
 	 * map.
 	 */
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public static void onWorldUnload(final WorldEvent.Unload evt) {
+	public static void onWorldUnload(@Nonnull final WorldEvent.Unload evt) {
 		final World w = evt.getWorld();
 		if (w.isRemote)
 			return;
@@ -72,7 +73,7 @@ public class ThePurge {
 	 * candidates for removal. Remove any chunk tracking data that has expired.
 	 */
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public static void onWorldTick(final TickEvent.WorldTickEvent evt) {
+	public static void onWorldTick(@Nonnull final TickEvent.WorldTickEvent evt) {
 		if (evt.side != Side.SERVER || evt.phase != Phase.END)
 			return;
 
@@ -86,7 +87,11 @@ public class ThePurge {
 	 * entities can be appropriately handled when joining the world.
 	 */
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
-	public static void onChunkPopulate(final PopulateChunkEvent.Pre evt) {
+	public static void onChunkPopulate(@Nonnull final PopulateChunkEvent.Pre evt) {
+		// This should never happen on a client thread, but double check
+		// to be sure
+		if (evt.getWorld().isRemote)
+			return;
 		final WorldContext ctx = getWorldContext(evt.getWorld());
 		ctx.add(new ChunkPos(evt.getChunkX(), evt.getChunkZ()), evt.getWorld());
 	}
@@ -97,10 +102,10 @@ public class ThePurge {
 	 * cancelled.
 	 */
 	@SubscribeEvent
-	public static void onEntityJoin(final EntityJoinWorldEvent evt) {
+	public static void onEntityJoin(@Nonnull final EntityJoinWorldEvent evt) {
 		final Entity entity = evt.getEntity();
 		final World world = entity.getEntityWorld();
-		if (world == null || world.isRemote || !(entity instanceof EntityItem))
+		if (world == null || world.isRemote || !WorldContext.isTargetEntity(entity))
 			return;
 
 		final WorldContext ctx = getWorldContext(world);
@@ -110,13 +115,15 @@ public class ThePurge {
 		}
 	}
 
+	@Nonnull
 	private static WorldContext createWorldContext(final World w) {
 		WorldContext ctx = null;
 		worldData.put(w.provider.getDimension(), ctx = new WorldContext());
 		return ctx;
 	}
 
-	private static WorldContext getWorldContext(final World w) {
+	@Nonnull
+	private static WorldContext getWorldContext(@Nonnull final World w) {
 		final WorldContext ctx = worldData.get(w.provider.getDimension());
 		return ctx == null ? createWorldContext(w) : ctx;
 	}

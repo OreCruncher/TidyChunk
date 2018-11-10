@@ -68,7 +68,7 @@ public final class ForgeUtils {
 
 	@Nonnull
 	public static String getModName(@Nonnull final ResourceLocation resource) {
-		return getModName(resource.getResourceDomain());
+		return getModName(resource.getPath());
 	}
 
 	@Nonnull
